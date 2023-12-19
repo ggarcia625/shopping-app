@@ -1,5 +1,6 @@
 import { Button, Card } from "react-bootstrap";
 import formatCurrency from "../utilities/formatCurrency";
+import { useShoppingCart } from "../context/shoppingCartContext";
 
 type StoreItemProps = {
   id: number;
@@ -9,7 +10,8 @@ type StoreItemProps = {
 };
 
 function StoreItem({ id, name, price, imgUrl }: StoreItemProps) {
-  const quantity = 1;
+  const { getItemQuantity, incrCartQuantity, decrCartQuantity, removeFromCart } = useShoppingCart();
+  const quantity = getItemQuantity(id);
   return (
     <Card className="h-100">
       <Card.Img
@@ -25,26 +27,17 @@ function StoreItem({ id, name, price, imgUrl }: StoreItemProps) {
         </Card.Title>
         <div className="mt-auto">
           {quantity === 0 ? (
-            <Button className="w-100">+ Add To Cart</Button>
-          ) : (
-            <div
-              className="d-flex align-items-center flex-column"
-              style={{ gap: ".5rem" }}
-            >
-              <div
-                className="d-flex align-items-center justify-content-center"
-                style={{ gap: ".5rem" }}
-              >
-                <Button>-</Button>
-                <div>
-                  <span className="fs-3">{quantity}</span>
-                  in cart
-                </div>
-                <Button>+</Button>
+            <Button className="w-100" onClick={() => incrCartQuantity(id)}>+ Add To Cart</Button>
+          ) : <div className="d-flex align-items-center flex-column" style={{ gap: '.5rem' }}>
+            <div className="d-flex align-itmes-center justify-content-center" style={{ gap: '0.5rem' }}>
+              <Button onClick={() => decrCartQuantity(id)}>-</Button>
+              <div>
+                <span className="fs-3">{quantity}</span> in cart
               </div>
-              <Button variant='danger'>Remove</Button>
+              <Button onClick={() => incrCartQuantity(id)}>+</Button>
             </div>
-          )}
+            <Button variant='danger' onClick={() => removeFromCart(id)}> Remove</Button>
+          </div>}
         </div>
       </Card.Body>
     </Card>
